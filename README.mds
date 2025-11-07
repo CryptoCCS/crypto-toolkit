@@ -1,0 +1,17 @@
+import requests
+
+def get_ltc_balance(address):
+    """Fetch LTC balance using public explorer API."""
+    url = f"https://api.blockcypher.com/v1/ltc/main/addrs/{address}/balance"
+    r = requests.get(url)
+    if r.status_code != 200:
+        return {"error": "Unable to fetch balance"}
+    data = r.json()
+    balance = data.get("balance", 0) / 1e8
+    return {"address": address, "balance": f"{balance:.8f} LTC"}
+
+def validate_ltc_address(address):
+    """Basic Litecoin address validation (length & prefix check)."""
+    if address.startswith(("L", "M")) and 26 <= len(address) <= 35:
+        return {"address": address, "valid": True}
+    return {"address": address, "valid": False}
